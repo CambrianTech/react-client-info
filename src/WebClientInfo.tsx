@@ -38,7 +38,7 @@ let Client:BrowserProperties = {};
 
 export {Client}
 
-export function WebClientInfo(props:WebClientProperties) {
+export function WebClientMonitor(props:WebClientProperties) {
 
     const [browserProperties, _setBrowserProperties] = useState<BrowserProperties>({});
 
@@ -115,13 +115,7 @@ export function WebClientInfo(props:WebClientProperties) {
             doc.style.setProperty("--inverse-app-width", browserProperties.isMobile ? `${-width}px` : '-100vw')
         }
 
-        if (browserProperties.hasTouchpad) {
-            if (browserProperties.browser === BrowserType.Firefox) {
-                doc.style.setProperty("--scrollbar-style", "none")
-            }
-            doc.style.setProperty("--scrollbar-display", "none")
-        }
-    }, [browserProperties.isMobile, browserProperties.hasTouchpad, browserProperties.browser]);
+    }, [browserProperties.isMobile]);
 
     const _orientationInterval = useRef<number>(0);
     const _orientationIntervalChecks = useRef<number>(0);
@@ -284,7 +278,7 @@ export function WebClientInfo(props:WebClientProperties) {
         }
     }, [browserProperties, props]);
 
-    return  <aside />
+    return null
 }
 
 
