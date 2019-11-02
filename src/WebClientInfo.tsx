@@ -38,7 +38,7 @@ let Client:BrowserProperties = {};
 
 export {Client}
 
-export function WebClientMonitor(props:WebClientProperties) {
+export default function WebClientMonitor(props:WebClientProperties) {
 
     const [browserProperties, _setBrowserProperties] = useState<BrowserProperties>({});
 
