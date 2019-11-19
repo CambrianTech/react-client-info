@@ -1,5 +1,6 @@
 
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
+import * as React from "react";
 
 export enum BrowserType {
     Other,
@@ -34,11 +35,7 @@ type WebClientProperties = {
     onClientStateChanged?:(client:BrowserProperties)=>void
 }
 
-let Client:BrowserProperties = {};
-
-export {Client}
-
-export default function WebClientMonitor(props:WebClientProperties) {
+export function WebClientInfo(props:WebClientProperties) {
 
     const [browserProperties, _setBrowserProperties] = useState<BrowserProperties>({});
 
@@ -48,7 +45,7 @@ export default function WebClientMonitor(props:WebClientProperties) {
     }, []);
 
     const calcIsPortrait = useCallback(() => {
-        return (1 === parseInt(getComputedStyle(document.documentElement).getPropertyValue("--is-portrait")))
+        return window.screen.orientation.type === "portrait-primary" ||  window.screen.orientation.type === "portrait-secondary"
     }, []);
 
     const setUserAgentProperties = useCallback((props:BrowserProperties) => {
@@ -99,24 +96,6 @@ export default function WebClientMonitor(props:WebClientProperties) {
         //console.log(Client);
     }, [calcIsPortrait]);
 
-    const setCSSVariables = useCallback((resetCSS?:boolean) => {
-        const doc = document.documentElement;
-
-        //without this check, causes WebGL flicker on desktop
-        if (browserProperties.isMobile || resetCSS) {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            doc.style.setProperty("--app-height", browserProperties.isMobile ? `${height}px` : '100vh');
-            doc.style.setProperty("--inverse-app-height", browserProperties.isMobile ? `${-height}px` : '-100vh');
-            doc.style.setProperty("--half-app-height", browserProperties.isMobile ? `${height / 2}px` : '50vh');
-            doc.style.setProperty("--inverse-half-app-height", browserProperties.isMobile ? `${-height / 2}px` : '-50vh');
-            doc.style.setProperty("--app-width", browserProperties.isMobile ? `${width}px` : '100vw');
-            doc.style.setProperty("--inverse-app-width", browserProperties.isMobile ? `${-width}px` : '-100vw')
-        }
-
-    }, [browserProperties.isMobile]);
-
     const _orientationInterval = useRef<number>(0);
     const _orientationIntervalChecks = useRef<number>(0);
 
@@ -128,13 +107,14 @@ export default function WebClientMonitor(props:WebClientProperties) {
         } else {
             _orientationIntervalChecks.current ++
         }
-        setCSSVariables();
+
+
         if (newValue !== browserProperties.isPortrait) {
             let props = browserProperties;
             props.isPortrait = calcIsPortrait();
             setBrowserProperties(props)
         }
-    }, [browserProperties, calcIsPortrait, setBrowserProperties, setCSSVariables]);
+    }, [browserProperties, calcIsPortrait, setBrowserProperties]);
 
     const handleOrientation = useCallback(() => {
         if (_orientationInterval.current === 0) {
@@ -257,22 +237,12 @@ export default function WebClientMonitor(props:WebClientProperties) {
     useEffect(() => {
 
         setUserAgentProperties(browserProperties);
-        setCSSVariables();
         setupEvents()
         handleOrientation()
 
-    }, [browserProperties, setupEvents, setCSSVariables, setUserAgentProperties, handleOrientation]);
+    }, [browserProperties, setupEvents, setUserAgentProperties, handleOrientation]);
 
     useEffect(() => {
-        setCSSVariables()
-    }, [browserProperties.hasTouchpad, browserProperties.isPortrait, setCSSVariables]);
-
-    useEffect(() => {
-        setCSSVariables(true)
-    }, [browserProperties.isMobile, setCSSVariables]);
-
-    useEffect(() => {
-        Client = browserProperties;
         if (props.onClientStateChanged) {
             props.onClientStateChanged(browserProperties)
         }
@@ -280,7 +250,3 @@ export default function WebClientMonitor(props:WebClientProperties) {
 
     return null
 }
-
-
-
-
