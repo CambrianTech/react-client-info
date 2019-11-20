@@ -45,7 +45,8 @@ export function WebClientInfo(props:WebClientProperties) {
     }, []);
 
     const calcIsPortrait = useCallback(() => {
-        return window.screen.orientation.type === "portrait-primary" ||  window.screen.orientation.type === "portrait-secondary"
+        const mql = window.matchMedia("(orientation: portrait)");
+        return mql.matches
     }, []);
 
     const setUserAgentProperties = useCallback((props:BrowserProperties) => {
