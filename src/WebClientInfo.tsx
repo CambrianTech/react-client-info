@@ -119,7 +119,6 @@ export function WebClientInfo(props:WebClientProperties) {
             _orientationIntervalChecks.current ++
         }
 
-
         if (newValue !== browserProperties.isPortrait) {
             let props = browserProperties;
             props.isPortrait = calcIsPortrait();
@@ -136,7 +135,7 @@ export function WebClientInfo(props:WebClientProperties) {
 
     const handleResize = useCallback(() => {
         setUserAgentProperties(browserProperties);
-        setBrowserProperties(browserProperties)
+        setBrowserProperties(browserProperties);
     }, [setUserAgentProperties, browserProperties, setBrowserProperties]);
 
     let isMouseCounts: Array<number> = [];
@@ -246,18 +245,26 @@ export function WebClientInfo(props:WebClientProperties) {
         browserProperties.browser, browserProperties.hasGestureSupport, browserProperties.hasTouchpad, browserProperties.isMobile]);
 
     useEffect(() => {
-
-        setUserAgentProperties(browserProperties);
-        setupEvents()
-        handleOrientation()
-
-    }, [browserProperties, setupEvents, setUserAgentProperties, handleOrientation]);
-
-    useEffect(() => {
         if (props.onClientStateChanged) {
             props.onClientStateChanged(browserProperties)
         }
     }, [browserProperties, props]);
+
+    const initialize = useCallback(() => {
+        setUserAgentProperties(browserProperties);
+        setupEvents()
+        handleOrientation()
+        setBrowserProperties(browserProperties)
+    }, [])
+
+    const initializeRef = useRef(initialize);
+    useEffect(() => { initializeRef.current = initialize; }, [initialize]);
+
+    useEffect(() => {
+        if (initializeRef.current) {
+            initializeRef.current()
+        }
+    }, []);
 
     return null
 }
