@@ -39,9 +39,19 @@ export function WebClientInfo(props:WebClientProperties) {
 
     const [browserProperties, _setBrowserProperties] = useState<BrowserProperties>({});
 
+    let _isMounted = useRef(false);
     const setBrowserProperties = useCallback((props:BrowserProperties) => {
+        if (!_isMounted.current) return
         let clone = Object.assign({}, props);
         _setBrowserProperties(clone)
+    }, []);
+
+    useEffect(() => {
+        _isMounted.current = true;
+
+        return () => {
+            _isMounted.current = false
+        }
     }, []);
 
     const calcIsPortrait = useCallback(() => {
