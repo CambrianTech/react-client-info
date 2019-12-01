@@ -245,7 +245,7 @@ export function WebClientInfo(props:WebClientProperties) {
         browserProperties.browser, browserProperties.hasGestureSupport, browserProperties.hasTouchpad, browserProperties.isMobile]);
 
     useEffect(() => {
-        if (props.onClientStateChanged) {
+        if (_isMounted.current && props.onClientStateChanged) {
             props.onClientStateChanged(browserProperties)
         }
     }, [browserProperties, props]);
