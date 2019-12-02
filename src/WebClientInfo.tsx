@@ -78,7 +78,7 @@ export function WebClientInfo(props:WebClientProperties) {
             props.browser = BrowserType.Other
         }
 
-        props.isMobile = ua.indexOf('Mobile') !== -1;
+        props.isMobile = ua.indexOf('Mobile') !== -1 || ua.indexOf('iOS') !== -1  || ua.indexOf('Android') !== -1;
         if (ua.indexOf('Mac OS') !== -1) {
             props.operatingSystem = OSType.Darwin
         } else if (ua.indexOf('Windows') !== -1) {
