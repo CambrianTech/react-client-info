@@ -1,6 +1,6 @@
 {
   "name": "react-client-info",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Web client information for react",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
